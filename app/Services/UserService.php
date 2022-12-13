@@ -7,6 +7,7 @@ use App\Traits\ImageUploaderTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Validation\Rule;
 
 class UserService implements UserServiceInterface
 {
@@ -20,6 +21,26 @@ class UserService implements UserServiceInterface
     {
         $this->model = $model;
         $this->request = $request;
+    }
+
+    public function rules($id = null)
+    {
+        return [
+            'firstname' => 'required|string',
+            'lastname' => 'required|string',
+            'roles' => 'required',
+            'username' => [
+                'required',
+                Rule::unique('users')->ignore($id),
+            ],
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($id),
+            ],
+            'password' => 'min:8|' . request()->method() === 'POST' ? 'required' : 'sometimes',
+            'photo' => 'sometimes|image|mimes:jpeg,jpg,png,gif|max:10000'
+        ];
     }
 
     public function list()
