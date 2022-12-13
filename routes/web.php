@@ -21,13 +21,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return view('welcome');
     });
+//
+//    Route::middleware('role:employee')->group(function () {
+//        Route::post('users/{user}/restore', [UserController::class, 'restore'])->name('users.restore');
+//        Route::delete('users/{user}/delete', [UserController::class, 'delete'])->name('users.delete');
+//        Route::get('users/trashed', [UserController::class, 'trashed'])->name('users.trashed');
+//    });
 
-    Route::middleware('role:employee')->group(function () {
-        Route::post('users/{user}/restore', [UserController::class, 'restore'])->name('users.restore');
-        Route::delete('users/{user}/delete', [UserController::class, 'delete'])->name('users.delete');
-        Route::get('users/trashed', [UserController::class, 'trashed'])->name('users.trashed');
-    });
-
+    Route::softDeletes('users', UserController::class);
     Route::resource('users', UserController::class);
 });
 

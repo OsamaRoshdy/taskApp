@@ -32,7 +32,7 @@
                                 <td>{{ $user->email }}</td>
                                 <td>
                                     <div class="btn-group">
-                                        {{ Form::open(['route' => ['users.restore', $user->id]]) }}
+                                        {{ Form::open(['route' => ['users.restore', $user->id], 'method' => 'PATCH']) }}
                                         <button class="btn btn-sm btn-success" type="submit">Restore</button>
                                         {{ Form::close() }}
                                     </div>

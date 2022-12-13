@@ -6,7 +6,7 @@
         </div>
         <!-- /.box-header -->
         <!-- form start -->
-        {{ Form::model($user , ['route' => ['users.update' ,$user->id ], 'role' => 'form','method' => 'PUT', 'files' => true]) }}
+        {{ Form::model($user , ['route' => ['users.update' ,$user->id ], 'role' => 'form','method' => 'PATCH', 'files' => true]) }}
         <div class="box-body">
             <div class="row">
                 @include('users.form')

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -36,6 +37,16 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+
+        Route::macro('softDeletes', function (string $prefix, $controller) {
+            Route::group(['prefix' => $prefix, 'controller' => $controller], function () use ($prefix) {
+                Route::get('/trashed', 'trashed')->name($prefix . '.trashed');
+                Route::patch('/{id}/restore', 'restore')->name($prefix . '.restore');
+                Route::delete('/{id}/delete', 'delete')->name($prefix . '.delete');
+            });
+        });
+
+
     }
 
     /**
