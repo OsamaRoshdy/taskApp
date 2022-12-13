@@ -31,8 +31,25 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function getFullnameAttribute()
+    {
+        return $this->attributes['firstname'] . ' ' . $this->attributes['lastname'];
+    }
+
+    public function getAvatarAttribute()
+    {
+        return asset('storage/images/users/' . $this->getAttribute('photo'));
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'role_has_users');
     }
+
+    public function hasRole(string $role)
+    {
+        return (bool)$this->roles()->where('name', $role)->first();
+    }
+
+
 }

@@ -76,14 +76,17 @@
             <ul class="sidebar-menu" data-widget="tree">
                 <li class="header">MAIN NAVIGATION</li>
 
-                <li>
-                    <a href="../widgets.html">
-                        <i class="fa fa-th"></i> <span>Widgets</span>
-                        <span class="pull-right-container">
-              <small class="label pull-right bg-green">new</small>
-            </span>
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-users"></i>
+                        <span>Users</span>
                     </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{{ route('users.index') }}"><i class="fa fa-user-circle"></i> List</a></li>
+                        <li><a href="{{ route('users.create') }}"><i class="fa fa-plus"></i> Create</a></li>
+                    </ul>
                 </li>
+
 
             </ul>
         </section>
@@ -104,7 +107,7 @@
         </section>
 
         <!-- Main content -->
-        <section class="content">
+        <section class="content container">
             <div class="row">
                 @yield('content')
             </div>
