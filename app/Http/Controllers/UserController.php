@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\UserService;
 use App\Traits\ImageUploaderTrait;
 use Illuminate\Http\Request;
 
@@ -12,14 +13,17 @@ class UserController extends Controller
 {
     use ImageUploaderTrait;
 
-    public function __construct()
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
     {
+        $this->userService = $userService;
         $this->middleware('role:admin')->only(['destroy', 'restore', 'delete', 'trashed']);
     }
 
     public function index()
     {
-        $users = User::select(['id', 'firstname', 'lastname', 'username', 'email', 'photo'])->paginate(10);
+        $users = $this->userService->list();
         return view('users.index', compact('users'));
     }
 
@@ -31,65 +35,50 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
-        $data = $request->validated();
-        $data['password'] = bcrypt($request->password);
-        $data['photo'] = $this->storeImage($request->photo, 'users');
-        $user = User::create($data);
-        $user->roles()->sync([$request->roles]);
-
+        $this->userService->store($request->validated());
         return redirect()->route('users.index');
     }
 
-    public function show(User $user)
+    public function show($id)
     {
+        $user = $this->userService->find($id);
         return view('users.show', compact('user'));
     }
 
-    public function edit(User $user)
+    public function edit($id)
     {
         $roles = Role::pluck('name', 'id');
+        $user = $this->userService->find($id);
         return view('users.edit', compact('roles', 'user'));
     }
 
-    public function update(User $user, UserRequest $request)
+    public function update($id, UserRequest $request)
     {
-        $data = $request->except(['photo', 'password', 'password_confirmation', 'roles']);
-        if ($request->password) {
-            $data['password'] = bcrypt($request->password);
-        }
-        if ($request->photo) {
-            $data['photo'] = $this->updateImage($request->photo, $user->photo,'users');
-        }
-
-        $user->update($data);
-        $user->roles()->sync([$request->roles]);
-
+        $this->userService->update($id, $request->validated());
         return redirect()->route('users.index');
     }
 
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        $user->delete();
+        $this->userService->destroy($id);
         return redirect()->route('users.index');
     }
 
     public function trashed()
     {
-        $users = User::onlyTrashed()->select(['id', 'firstname', 'lastname', 'username', 'email'])->paginate(10);
+        $users = $this->userService->listTrashed();
         return view('users.trashed', compact('users'));
     }
 
     public function restore($id)
     {
-        User::where('id', $id)->withTrashed()->restore();
+         $this->userService->restore($id);
         return redirect()->route('users.trashed');
     }
 
     public function delete($id)
     {
-        $user = User::where('id', $id)->withTrashed()->first();
-        $this->deleteImage($user->photo, 'users');
-        $user->forceDelete();
+        $this->userService->delete($id);
         return redirect()->route('users.trashed');
     }
 
