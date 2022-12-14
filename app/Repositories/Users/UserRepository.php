@@ -21,6 +21,11 @@ class UserRepository implements UserRepositoryInterface
         return $this->model->select(['id', 'firstname', 'lastname', 'username', 'email', 'photo'])->paginate(10);
     }
 
+    public function employees()
+    {
+        return $this->model->employee()->paginate(10);
+    }
+
     public function show($id)
     {
         return $this->model->findOrfail($id);

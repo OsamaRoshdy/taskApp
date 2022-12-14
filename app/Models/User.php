@@ -21,6 +21,8 @@ class User extends Authenticatable
         'email',
         'photo',
         'password',
+        'last_at',
+        'ip_address',
     ];
 
     protected $hidden = [
@@ -50,6 +52,13 @@ class User extends Authenticatable
     public function role()
     {
         return $this->roles()->first();
+    }
+
+    public function scopeEmployee($query)
+    {
+        return $query->whereHas('roles', function ($subQuery) {
+            $subQuery->where('name', 'employee');
+        });
     }
 
     public function hasRole(string $role)

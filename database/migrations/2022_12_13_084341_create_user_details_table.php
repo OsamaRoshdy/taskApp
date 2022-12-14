@@ -21,8 +21,8 @@ return new class extends Migration
                 ->on('users')
                 ->onDelete('cascade');
 
-            $table->dateTime('last_at');
-            $table->ipAddress();
+            $table->string('address');
+            $table->string('phone');
 
         });
     }

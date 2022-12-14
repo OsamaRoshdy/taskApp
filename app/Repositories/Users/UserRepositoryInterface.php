@@ -5,6 +5,7 @@ namespace App\Repositories\Users;
 interface UserRepositoryInterface
 {
     public function list();
+    public function employees();
     public function store(array $data);
     public function show($id);
     public function update(int $id, array $data);
