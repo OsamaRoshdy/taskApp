@@ -6,14 +6,13 @@ use App\Models\User;
 use App\Traits\ImageUploaderTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rule;
 
 class UserService implements UserServiceInterface
 {
     use ImageUploaderTrait;
 
-    protected Model $model;
+    protected User $model;
 
     protected Request $request;
 
@@ -48,7 +47,6 @@ class UserService implements UserServiceInterface
         return $this->model->select(['id', 'firstname', 'lastname', 'username', 'email', 'photo'])->paginate(10);
     }
 
-
     public function store(array $attributes)
     {
         $data = $attributes;
@@ -62,6 +60,11 @@ class UserService implements UserServiceInterface
     public function find(int $id):? Model
     {
         return $this->model->findOrFail($id);
+    }
+
+    public function findTrashed(int $id):? Model
+    {
+        return $this->model::withTrashed()->findOrFail($id);
     }
 
     public function update(int $id, array $attributes)
@@ -89,17 +92,17 @@ class UserService implements UserServiceInterface
 
     public function listTrashed()
     {
-        return $this->model->onlyTrashed()->select(['id', 'firstname', 'lastname', 'username', 'email'])->paginate(10);
+        return $this->model::onlyTrashed()->select(['id', 'firstname', 'lastname', 'username', 'email'])->paginate(10);
     }
 
     public function restore($id)
     {
-        return $this->model->where('id', $id)->withTrashed()->restore();
+        return $this->findTrashed($id)->restore();
     }
 
     public function delete($id)
     {
-        $user = $this->model->where('id', $id)->withTrashed()->first();
+        $user = $this->findTrashed($id);
         $this->deleteImage($user->photo, 'users');
         return $user->forceDelete();
     }
