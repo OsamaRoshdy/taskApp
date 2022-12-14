@@ -37,7 +37,9 @@
                                             {{ Form::open(['route' => ['users.destroy', $user->id], 'method' => 'DELETE']) }}
                                             <a class="btn btn-sm btn-success" href="{{ route('users.edit', $user->id) }}">Edit</a>
                                             <a class="btn btn-sm btn-info" href="{{ route('users.show', $user->id) }}">Show</a>
+                                            @if(auth()->user()->hasRole('admin'))
                                             <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                                            @endif
                                             {{ Form::close() }}
                                         </div>
                                     </td>

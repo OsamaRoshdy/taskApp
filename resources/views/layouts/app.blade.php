@@ -87,6 +87,18 @@
                     </ul>
                 </li>
 
+                @if(auth()->user()->hasRole('admin'))
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-users"></i>
+                        <span>Logs</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{{ route('logs.index') }}"><i class="fa fa-user-circle"></i> List</a></li>
+                    </ul>
+                </li>
+                @endif
+
 
             </ul>
         </section>
