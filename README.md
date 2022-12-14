@@ -13,3 +13,14 @@
 - **nginx** - `:80`
 - **mysql** - `:3306`
 - **php** - `:9000`
+
+
+## - Credentials
+
+## admin
+- admin@admin.com
+- 123456
+
+## employee
+- employee@employee.com
+- 123456
