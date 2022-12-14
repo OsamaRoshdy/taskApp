@@ -62,5 +62,14 @@ class UserTest extends TestCase
             ->assertViewHas('users');
     }
 
+    public function test_employee_can_not_delete_user()
+    {
+        $user = User::factory()->create();
+        $this->followingRedirects()
+            ->actingAsWithRole('employee')
+            ->delete(route('users.destroy', $user->id))
+            ->assertStatus(403);
+    }
+
 
 }
